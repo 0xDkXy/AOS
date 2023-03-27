@@ -1,10 +1,13 @@
 .PHONY: clean
 
-run: mbr loader
+run: done
 	qemu-system-x86_64 hd60M.img 
 
-debug: mbr loader
+debug: done
 	qemu-system-x86_64 -S -s hd60M.img
+
+done: mbr loader
+	echo 'wrote to disk'
 
 mbr: mbr.bin
 	dd if=build/mbr.bin of=hd60M.img bs=512 count=1 conv=notrunc
