@@ -13,7 +13,7 @@ mbr: mbr.bin
 	dd if=build/mbr.bin of=hd60M.img bs=512 count=1 conv=notrunc
 
 loader: loader.bin
-	dd if=build/loader.bin of=hd60M.img bs=512 count=1 seek=2 conv=notrunc
+	dd if=build/loader.bin of=hd60M.img bs=512 count=4 seek=2 conv=notrunc
 
 loader.bin: boot/loader.S
 	nasm -I ./boot/include/ -o build/loader.bin boot/loader.S
