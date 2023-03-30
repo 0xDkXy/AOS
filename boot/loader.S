@@ -1,7 +1,6 @@
 %include "boot.inc"
 section loader vstart=LOADER_BASE_ADDR
 LOADER_STACK_TOP equ LOADER_BASE_ADDR
-jmp loader_start
 
 ;build GDT
 GDT_BASE:   dd  0x00000000
@@ -19,6 +18,7 @@ VIDEO_DESC: dd  0x80000007
 GDT_SIZE    equ $ - GDT_BASE
 GDT_LIMIT   equ GDT_SIZE - 1
 times   60  dq  0
+total_mem_bytes dd 0
 
 SELECTOR_CODE   equ (0x0001<<3) + TI_GDT + RPL0
 SELECTOR_DATA   equ (0x0002<<3) + TI_GDT + RPL0
@@ -27,9 +27,45 @@ SELECTOR_VIDEO   equ (0x0003<<3) + TI_GDT + RPL0
 gdt_ptr dw  GDT_LIMIT
         dd  GDT_BASE
 
+ards_buf times 244 db 0
+ards_nr dw 0
+
 loadermsg   db  'AOS LOADER in real.'
 
 loader_start:
+    
+    xor ebx, ebx
+    mov edx, 0x534d4150
+    mov di, ards_buf
+.e820_mem_get_loop:
+    mov eax, 0x000e820
+    mov ecx, 20
+    int 0x15
+    add di, cx
+    inc word [ards_nr]
+    cmp ebx, 0
+    jnz .e820_mem_get_loop
+
+    mov cx, [ards_nr]
+    mov ebx, ards_buf
+    xor edx, edx
+.find_max_mem_area:
+    mov eax, [ebx]
+    add eax, [ebx+8]
+    ;mov eax, [ebx+8]
+    add ebx, 20
+    cmp edx, eax
+    jge .next_ards
+    mov edx, eax
+.next_ards:
+    loop .find_max_mem_area
+    jmp .mem_get_ok
+
+
+.mem_get_ok:
+    mov [total_mem_bytes], edx
+
+
     mov sp, LOADER_BASE_ADDR
     mov bp, loadermsg
     mov cx, 19
