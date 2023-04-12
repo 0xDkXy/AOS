@@ -131,7 +131,7 @@ setup_page:
     mov ebx, eax
 
     or eax, PG_US_U | PG_RW_W | PG_P
-    mov [PAGE_DIR_TABLE_POS + 0x0], eax
+    mov [PAGE_DIR_TABLE_POS ], eax
     mov [PAGE_DIR_TABLE_POS + 0xc00], eax
     sub eax, 0x1000
     mov [PAGE_DIR_TABLE_POS + 4092], eax
