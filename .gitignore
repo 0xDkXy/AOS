@@ -1,3 +1,5 @@
 *.img
 build
 *.out
+*.o
+*.bin
