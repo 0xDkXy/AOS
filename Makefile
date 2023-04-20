@@ -27,11 +27,17 @@ loader.bin: boot/loader.S
 mbr.bin: boot/mbr.S
 	nasm -I ./boot/include/ -o build/mbr.bin boot/mbr.S
 
-build/kernel.bin: build/main.o
-	i386-elf-ld build/main.o -Ttext 0xc0001500 -e main -o build/kernel.bin
+print: lib/kernel/print.S
+	nasm -f elf -o build/print.o lib/kernel/print.S
 
 build/main.o: kernel/main.c
-	i386-elf-gcc -c -o build/main.o kernel/main.c
+	i386-elf-gcc -I lib/ -c -o build/main.o kernel/main.c
+
+build/kernel.bin: build/main.o print
+	i386-elf-ld  -Ttext 0xc0001500 -e main -o build/kernel.bin \
+		build/main.o build/print.o
+
+
 
 init:
 	qemu-img create -f raw hd60M.img 60M ;\
