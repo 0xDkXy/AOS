@@ -97,8 +97,7 @@ p_mode_start:
     mov ebx, KERNEL_BIN_BASE_ADDR
     mov ecx, 200
 
-    mov byte [gs:160], 'V'
-    call rd_disk_m_32
+    call rd_disk_m_32; 0x0cad
 
     ;page
     call setup_page
@@ -123,6 +122,7 @@ p_mode_start:
     jmp SELECTOR_CODE:enter_kernel
 enter_kernel:
     call kernel_init
+    mov byte [gs:160], 'V'
     mov esp, 0xc009f000
     jmp KERNEL_ENTRY_POINT
     
@@ -258,8 +258,8 @@ rd_disk_m_32:
     mov dx, 0x1f0
 
 .go_on_read:
-    in ax, dx
+    in ax, dx ;0x0e33
     mov [ebx], ax
-    add bx, 2
+    add ebx, 2
     loop .go_on_read
     ret
