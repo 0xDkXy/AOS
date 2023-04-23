@@ -1,6 +1,12 @@
 #include "interrupt.h"
 #include "stdint.h"
 #include "global.h"
+#include "io.h"
+
+#define PIC_M_CTRL 0x20
+#define PIC_M_DATA 0x21
+#define PIC_S_CTRL 0xa0
+#define PIC_S_DATA 0xa1
 
 #define IDT_DESC_CNT 0x21
 
@@ -8,7 +14,7 @@ struct gate_desc
 {
     uint16_t func_offset_low_word;
     uint16_t selector;
-    uint8_t dcout;
+    uint8_t dcount;
     uint8_t attribute;
     uint16_t func_offset_high_word;
 };
@@ -16,7 +22,7 @@ struct gate_desc
 static void make_idt_desc(struct gate_desc* p_gdesc, uint8_t attr, intr_handler function);
 static struct gate_desc idt[IDT_DESC_CNT];
 
-exter intr_handler intr_entry_table[IDT_DESC_CNT];
+extern intr_handler intr_entry_table[IDT_DESC_CNT];
 
 static void make_idt_desc(struct gate_desc* p_gdesc, uint8_t attr, intr_handler function)
 {
@@ -37,9 +43,29 @@ static void idt_desc_init(void)
     put_str("idt_desc_init done\n");
 }
 
+static void pic_init(void)
+{
+    outb(PIC_M_CTRL, 0x11);
+    outb(PIC_M_DATA, 0x20);
+
+    outb(PIC_M_DATA, 0x04);
+    outb(PIC_M_DATA, 0x01);
+
+    outb(PIC_S_CTRL, 0x11);
+    outb(PIC_S_DATA, 0x28);
+
+    outb(PIC_S_DATA, 0x02);
+    outb(PIC_S_DATA, 0x01);
+
+    outb(PIC_M_DATA, 0xfe);
+    outb(PIC_S_DATA, 0xff);
+
+    put_str("   pic_init done\n");
+}
+
 void idt_init()
 {
-    put_str("idt_init start\n");
+    put_str("   idt_init start\n");
     idt_desc_init();
     pic_init();
 
