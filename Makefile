@@ -30,12 +30,24 @@ mbr.bin: boot/mbr.S
 print: lib/kernel/print.S
 	nasm -f elf -o build/print.o lib/kernel/print.S
 
-build/main.o: kernel/main.c
-	i386-elf-gcc -I lib/ -c -o build/main.o kernel/main.c
+build/kernel.o: kernel/kernel.S
+	nasm -f elf -o build/kernel.o kernel/kernel.S
 
-build/kernel.bin: build/main.o print
+build/main.o: kernel/main.c
+	i386-elf-gcc -I lib/ -I kernel/ -c -fno-builtin -o build/main.o \
+		kernel/main.c
+
+build/interrupt.o: kernel/interrupt.c
+	i386-elf-gcc -I lib/ -I kernel/ -c -fno-builtin -o build/interrupt.o \
+		kernel/interrupt.c
+
+build/init.o: kernel/init.c kernel/interrupt.h
+	i386-elf-gcc -I lib/ -I kernel/ -c -fno-builtin -o build/init.o \
+		kernel/init.c
+
+build/kernel.bin: build/main.o print build/kernel.o build/init.o build/interrupt.o
 	i386-elf-ld  -Ttext 0xc0001500 -e main -o build/kernel.bin \
-		build/main.o build/print.o
+		build/init.o build/interrupt.o build/print.o build/kernel.o
 
 
 

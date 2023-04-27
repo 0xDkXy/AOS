@@ -1,7 +1,7 @@
 #include "interrupt.h"
 #include "stdint.h"
 #include "global.h"
-#include "io.h"
+#include "kernel/io.h"
 
 #define PIC_M_CTRL 0x20
 #define PIC_M_DATA 0x21
