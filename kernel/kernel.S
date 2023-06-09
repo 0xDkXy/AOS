@@ -3,9 +3,10 @@
 %define ZERO push 0
 
 extern put_str
+; the array of interrupt handler registed in C
+extern idt_table 
 
 section .data
-intr_str db "interrupt occur!", 0xa, 0
 global intr_entry_table
 intr_entry_table:
 
@@ -13,20 +14,40 @@ intr_entry_table:
 section .text
 intr%1entry:
     %2
-    push intr_str
-    call put_str
-    add esp, 4
+    ; restore the context
+    push ds
+    push es
+    push fs
+    push gs
+    pushad
+
 
     mov al, 0x20
     out 0xa0, al
     out 0x20, al
 
-    add esp, 4
-    iret
+    push %1
+
+    call [idt_table + %1 * 4]
+    jmp intr_exit
+
 
 section .data
     dd intr%1entry
 %endmacro
+
+section .text
+global intr_exit
+intr_exit:
+    ; recover the context
+    add esp, 4 ; jump over the intr number in stack
+    popad
+    pop gs
+    pop fs
+    pop es
+    pop ds
+    add esp, 4 ; jump over the error_code
+    iretd
 
 VECTOR 0x00, ZERO
 VECTOR 0x01, ZERO
