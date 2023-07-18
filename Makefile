@@ -9,7 +9,8 @@ CFLAGS = -Wall $(LIB) -c -fno-builtin -w -Wstrict-prototypes \
 		 -Wmissing-prototypes
 LDFLAGS = -Ttext $(ENTRY_POINT) -e main -Map $(BUILD_DIR)/kernel.map
 OBJS = $(BUILD_DIR)/main.o $(BUILD_DIR)/init.o $(BUILD_DIR)/interrupt.o \
-	   $(BUILD_DIR)/kernel.o $(BUILD_DIR)/print.o $(BUILD_DIR)/debug.o
+	   $(BUILD_DIR)/kernel.o $(BUILD_DIR)/print.o $(BUILD_DIR)/debug.o \
+	   $(BUILD_DIR)/string.o
 
 
 BOOTFLAGS = -I ./boot/include/
@@ -18,6 +19,9 @@ BOOTOBJS = $(BUILD_DIR)/mbr.bin $(BUILD_DIR)/loader.bin
 
 #################### compile C #################### 
 $(BUILD_DIR)/%.o: kernel/%.c
+	$(CC) $(CFLAGS) $< -o $@
+
+$(BUILD_DIR)/%.o: lib/%.c
 	$(CC) $(CFLAGS) $< -o $@
 
 #################### compile Assembly #################### 
