@@ -10,7 +10,7 @@ void bitmap_init(struct bitmap* btmp)
     memset(btmp->bits, 0, btmp->btmp_bytes_len);
 }
 
-bool bitmap_scan_test(struct bitmap* btmp, uint32_t bit_idx)
+uint8_t bitmap_scan_test(struct bitmap* btmp, uint32_t bit_idx)
 {
     uint32_t byte_idx = bit_idx / 8;
     uint32_t bit_odd = bit_idx % 8;
