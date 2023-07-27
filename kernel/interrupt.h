@@ -6,6 +6,7 @@
 typedef void* intr_handler;
 
 void idt_init();
+void register_handler(uint8_t, intr_handler);
 
 /* define the status of interrupt
  * INTR_OFF is 0, interrupt off

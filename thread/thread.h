@@ -2,6 +2,7 @@
 #define __THREAD_THREAD_H
 
 #include "stdint.h"
+#include "kernel/list.h"
 
 typedef void thread_func(void*);
 

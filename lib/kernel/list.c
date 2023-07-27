@@ -3,7 +3,6 @@
 
 #define NULL 0
 
-bool _list_empty(struct list* plist);
 
 void list_init(struct list* list)
 {
@@ -72,7 +71,7 @@ struct list_elem* list_traversal(struct list* plist, function func, int arg)
 {
     struct list_elem* elem = plist->head.next;
 
-    if (_list_empty(plist)) {
+    if (list_empty(plist)) {
         return NULL;
     }
 
@@ -96,7 +95,7 @@ uint32_t list_len(struct list* plist)
     return length;
 }
 
-bool _list_empty(struct list* plist)
+bool list_empty(struct list* plist)
 {
     // return (plist->head.next == &plist->tail ? true : false);
     return (plist->head.next == &plist->tail ? 1 : 0);

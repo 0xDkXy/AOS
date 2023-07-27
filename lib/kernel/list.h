@@ -19,6 +19,7 @@ struct list {
 
 typedef bool (function)(struct list_elem*, int arg);
 
+bool list_empty(struct list*);
 void list_init(struct list*);
 void list_insert_before(struct list_elem* before, struct list_elem*);
 void list_push(struct list* plist, struct list_elem* elem);

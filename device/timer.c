@@ -1,6 +1,8 @@
 #include "timer.h"
 #include "kernel/io.h"
 #include "kernel/print.h"
+#include "thread.h"
+#include "debug.h"
 
 #define IRQ0_FREQUENCY  100
 #define INPUT_FREQUENCY 1193180
@@ -10,6 +12,8 @@
 #define COUNTER_MODE    2
 #define READ_WRITE_LATCH    3
 #define PIT_CONTROL_PORT    0x43
+
+uint32_t ticks;
 
 static void frequency_set( \
         uint8_t counter_port, \
@@ -25,6 +29,22 @@ static void frequency_set( \
 
 }
 
+static void intr_timer_handler(void) 
+{
+    struct task_struct* cur_thread = running_thread();
+
+    ASSERT(cur_thread->stack_magic == 0x19870916);
+
+    cur_thread->elapsed_ticks++;
+    ticks++;
+
+    if (cur_thread->ticks == 0) {
+        schedule();
+    } else {
+        cur_thread->ticks--;
+    }
+}
+
 void timer_init()
 {
     put_str("timer_init start\n");
@@ -35,5 +55,7 @@ void timer_init()
             COUNTER_MODE, \
             COUNTER0_VALUE \
             );
+    register_handler(0x20, intr_timer_handler);
     put_str("timer_init done\n");
 }
+

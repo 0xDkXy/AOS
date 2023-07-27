@@ -175,6 +175,11 @@ enum intr_status intr_get_status()
     return (EFLAGS_IF & eflags) ? INTR_ON : INTR_OFF;
 }
 
+void register_handler(uint8_t vector_no, intr_handler function)
+{
+    idt_table[vector_no] = function;
+}
+
 
 /*
  * complete all the initializing work before off the interrupt.
