@@ -12,7 +12,8 @@ OBJS = $(BUILD_DIR)/main.o $(BUILD_DIR)/init.o $(BUILD_DIR)/interrupt.o \
 	   $(BUILD_DIR)/kernel.o $(BUILD_DIR)/print.o $(BUILD_DIR)/debug.o \
 	   $(BUILD_DIR)/string.o $(BUILD_DIR)/bitmap.o $(BUILD_DIR)/memory.o \
 	   $(BUILD_DIR)/thread.o \
-	   $(BUILD_DIR)/list.o
+	   $(BUILD_DIR)/list.o \
+	   $(BUILD_DIR)/timer.o
 
 
 BOOTFLAGS = -I ./boot/include/
@@ -30,6 +31,9 @@ $(BUILD_DIR)/%.o: lib/kernel/%.c
 	$(CC) $(CFLAGS) $< -o $@
 
 $(BUILD_DIR)/%.o: thread/%.c
+	$(CC) $(CFLAGS) $< -o $@
+
+$(BUILD_DIR)/%.o: device/%.c
 	$(CC) $(CFLAGS) $< -o $@
 
 #################### compile Assembly #################### 
