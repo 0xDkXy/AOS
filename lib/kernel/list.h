@@ -15,6 +15,7 @@ struct list_elem {
 struct list {
     struct list_elem head;
     struct list_elem tail;
+    uint8_t length;
 };
 
 typedef bool (function)(struct list_elem*, int arg);

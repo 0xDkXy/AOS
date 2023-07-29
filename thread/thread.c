@@ -66,28 +66,45 @@ struct task_struct* thread_start(char* name, \
                                  void* func_arg)
 {
     struct task_struct* thread = get_kernel_pages(1);
+    ASSERT((uint32_t)thread != 0);
+    // put_str("thread ");
+    // put_str(name);
+    // put_str(" task struct addr: ");
+    // put_int((uint32_t)thread);
+    // put_str("\n");
 
     init_thread(thread, name, prio);
+    // put_str("init thread done\n");
     thread_create(thread, function, func_arg);
+    // put_str("thread create done\n");
 
     ASSERT(!elem_find(&thread_ready_list, &thread->general_tag));
+    // put_str("thread ready list find done\n");
 
     list_append(&thread_ready_list, &thread->general_tag);
 
-    ASSERT(!elem_find(&thread_all_list , &thread->general_tag));
+    ASSERT(!elem_find(&thread_all_list , &thread->all_list_tag));
+    // put_str("thread all list find done\n");
 
-    list_append(&thread_all_list, &thread->general_tag);
+    list_append(&thread_all_list, &thread->all_list_tag);
 
     return thread;
 }
 
 static void make_main_thread(void)
 {
+    // put_str("make main thread start\n");
     main_thread = running_thread();
+    // put_str("main thread: ");
+    // put_int((uint32_t)main_thread);
+    // put_str("\n");
     init_thread(main_thread, "main", 31);
+    // put_str("init thread done \n");
+
 
     ASSERT(!elem_find(&thread_all_list, &main_thread->all_list_tag));
     list_append(&thread_all_list, &main_thread->all_list_tag);
+    // put_str("make main thread done\n");
 }
 
 void schedule()
@@ -115,9 +132,9 @@ void schedule()
 
 void thread_init(void)
 {
-    put_str("thread_init start\n");
+    // put_str("thread_init start\n");
     list_init(&thread_ready_list);
     list_init(&thread_all_list);
     make_main_thread();
-    put_str("thread_init done\n");
+    // put_str("thread_init done\n");
 }

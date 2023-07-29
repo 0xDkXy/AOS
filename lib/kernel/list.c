@@ -3,6 +3,18 @@
 
 #define NULL 0
 
+static void print_list(struct list* plist)
+{
+    put_str("\n***************************************\n");
+    struct list_elem* elem = &plist->head;
+    do {
+        put_int((uint32_t)elem);
+        put_str(" -> ");
+        elem = elem->next;
+    } while (elem != &(plist->tail));
+    put_int((uint32_t)elem);
+    put_str("\n***************************************\n");
+}
 
 void list_init(struct list* list)
 {
@@ -10,6 +22,13 @@ void list_init(struct list* list)
     list->head.next = &list->tail;
     list->tail.prev = &list->head;
     list->tail.next = NULL;
+    list->length = 0;
+    // put_str("list head: ");
+    // put_int((uint32_t)&list->head);
+    // put_str("\n");
+    // put_str("list tail: ");
+    // put_int((uint32_t)&list->tail);
+    // put_str("\n");
 }
 
 void list_insert_before(struct list_elem* before, struct list_elem* elem)
@@ -29,11 +48,15 @@ void list_insert_before(struct list_elem* before, struct list_elem* elem)
 void list_push(struct list* plist, struct list_elem* elem)
 {
     list_insert_before(plist->head.next, elem);
+    plist->length += 1;
 }
 
 void list_append(struct list* plist, struct list_elem* elem)
 {
     list_insert_before(&plist->tail, elem);
+    // put_str("list append: \n");
+    // print_list(plist);
+    plist->length += 1;
 }
 
 void list_remove(struct list_elem* pelem)
@@ -50,11 +73,13 @@ struct list_elem* list_pop(struct list* plist)
 {
     struct list_elem* elem = plist->head.next;
     list_remove(elem);
+    plist->length -= 1;
     return elem;
 }
 
 bool elem_find(struct list* plist, struct list_elem* obj_elem)
 {
+    // print_list(plist);
     struct list_elem* elem = plist->head.next;
     while (elem != &plist->tail) {
         if (elem == obj_elem) {
@@ -66,6 +91,7 @@ bool elem_find(struct list* plist, struct list_elem* obj_elem)
     // return false;
     return 0;
 }
+
 
 struct list_elem* list_traversal(struct list* plist, function func, int arg)
 {
