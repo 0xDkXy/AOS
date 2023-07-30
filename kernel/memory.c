@@ -53,17 +53,17 @@ static void mem_pool_init(uint32_t all_mem)
     kernel_pool.pool_bitmap.bits = (void*)MEM_BITMAP_BASE;
     user_pool.pool_bitmap.bits = (void*)(MEM_BITMAP_BASE + kbm_length);
 
-    put_str("   kernel_pool_bitmap_start:");
-    put_int((int)kernel_pool.pool_bitmap.bits);
-    put_str(" kernel_pool_phy_addr_start:");
-    put_int(kernel_pool.phy_addr_start);
-    put_str("\n");
-    
-    put_str("user_pool_bitmap_start:");
-    put_int((int)user_pool.pool_bitmap.bits);
-    put_str(" user_pool_phy_addr_start:");
-    put_int(user_pool.phy_addr_start);
-    put_str("\n");
+    // put_str("   kernel_pool_bitmap_start:");
+    // put_int((int)kernel_pool.pool_bitmap.bits);
+    // put_str(" kernel_pool_phy_addr_start:");
+    // put_int(kernel_pool.phy_addr_start);
+    // put_str("\n");
+    // 
+    // put_str("user_pool_bitmap_start:");
+    // put_int((int)user_pool.pool_bitmap.bits);
+    // put_str(" user_pool_phy_addr_start:");
+    // put_int(user_pool.phy_addr_start);
+    // put_str("\n");
 
     bitmap_init(&kernel_pool.pool_bitmap);
     bitmap_init(&user_pool.pool_bitmap);

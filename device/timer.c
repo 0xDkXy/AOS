@@ -31,7 +31,7 @@ static void frequency_set( \
 
 static void intr_timer_handler(void) 
 {
-    put_str("intr timer handler\n");
+    // put_str("intr timer handler\n");
     struct task_struct* cur_thread = running_thread();
     // put_str(cur_thread->name);
     // put_int((uint32_t)(cur_thread->stack_magic));
@@ -51,7 +51,7 @@ static void intr_timer_handler(void)
 void timer_init()
 {
     put_str("timer_init start\n");
-    // frequency_set(\
+    frequency_set(\
             COUNTER0_PORT, \
             COUNTER0_NO, \
             READ_WRITE_LATCH, \
