@@ -10,6 +10,7 @@ section .text
 global put_char
 global put_str
 global put_int
+global set_cursor_
 put_int:
     pushad
     mov ebp, esp
@@ -76,6 +77,8 @@ put_str:
     pop ecx
     pop ebx
     ret
+
+
 put_char:
     pushad
     mov ax, SELECTOR_VIDEO
@@ -174,4 +177,30 @@ put_char:
 .put_char_done:
     popad
     ret
+
+set_cursor_:
+    push eax
+    push ebx
+    push edx
+
+    mov bx, [esp + 3 * 4]
+
+    mov dx, 0x03d4
+    mov al, 0x0e
+    out dx, al
+    mov dx, 0x03d5
+    mov al, bh
+    out dx, al
+
+    mov dx, 0x03d4
+    mov al, 0x0f
+    out dx, al
+    mov dx, 0x03d5
+    mov al, bl
+    out dx, al
+     
+    pop edx
+    pop ebx
+    pop eax
+    ret 
 
