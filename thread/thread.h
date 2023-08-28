@@ -70,5 +70,7 @@ struct task_struct {
     uint32_t stack_magic;
 };
 
+struct task_struct* running_thread();
+
 
 #endif

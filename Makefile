@@ -14,7 +14,8 @@ OBJS = $(BUILD_DIR)/main.o $(BUILD_DIR)/init.o $(BUILD_DIR)/interrupt.o \
 	   $(BUILD_DIR)/thread.o \
 	   $(BUILD_DIR)/list.o \
 	   $(BUILD_DIR)/timer.o \
-	   $(BUILD_DIR)/switch.o
+	   $(BUILD_DIR)/switch.o \
+	   $(BUILD_DIR)/sync.o
 	
 
 
