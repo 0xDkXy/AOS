@@ -12,4 +12,5 @@ void init_all()
     timer_init();
     mem_init();
     thread_init();
+    console_init();
 }
