@@ -16,14 +16,10 @@ int main(void)
 
     // intr_disable();
 
-    thread_start("k_thread_a", 32, k_thread_a, "argA ");
-    thread_start("k_thread_b", 8, k_thread_b, "argB ");
+    // thread_start("k_thread_a", 32, k_thread_a, "argA ");
+    // thread_start("k_thread_b", 8, k_thread_b, "argB ");
 
     intr_enable();
-    // void* new_page = get_kernel_pages(1);
-    // put_str("new page addr: ");
-    // put_int((uint32_t)(new_page));
-    // put_str("\n");
 
     // enum intr_status status = intr_get_status();
     // if (status == INTR_ON)
@@ -32,9 +28,10 @@ int main(void)
     //     put_str("intr off\n");
 
 
-    while(1) {
-        console_put_str("Main ");
-    }
+    // while(1) {
+    //     console_put_str("Main ");
+    // }
+    while(1);
     return 0;
 }
 

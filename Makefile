@@ -16,7 +16,8 @@ OBJS = $(BUILD_DIR)/main.o $(BUILD_DIR)/init.o $(BUILD_DIR)/interrupt.o \
 	   $(BUILD_DIR)/timer.o \
 	   $(BUILD_DIR)/switch.o \
 	   $(BUILD_DIR)/sync.o	\
-	   $(BUILD_DIR)/console.o
+	   $(BUILD_DIR)/console.o \
+	   $(BUILD_DIR)/keyboard.o
 	
 
 
