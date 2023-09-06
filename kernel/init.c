@@ -4,6 +4,7 @@
 #include "interrupt.h"
 #include "../device/timer.h"
 #include "thread.h"
+#include "../device/keyboard.h"
 
 void init_all()
 {
@@ -13,4 +14,5 @@ void init_all()
     mem_init();
     thread_init();
     console_init();
+    keyboard_init();
 }

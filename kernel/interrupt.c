@@ -8,7 +8,7 @@
 #define PIC_S_CTRL 0xa0
 #define PIC_S_DATA 0xa1
 
-#define IDT_DESC_CNT 0x21
+#define IDT_DESC_CNT 0x30 // the interruption that supported now 
 
 // register eflag  IF = 1
 #define EFLAGS_IF 0x00000200 
@@ -56,23 +56,33 @@ static void idt_desc_init(void)
     put_str("idt_desc_init done\n");
 }
 
+/*
+ * init program interrupt chip 8259A
+ */
 static void pic_init(void)
 {
+    // initialize main chip
     outb(PIC_M_CTRL, 0x11);
     outb(PIC_M_DATA, 0x20);
 
     outb(PIC_M_DATA, 0x04);
     outb(PIC_M_DATA, 0x01);
 
+    // initialize peripheral chip
     outb(PIC_S_CTRL, 0x11);
     outb(PIC_S_DATA, 0x28);
 
     outb(PIC_S_DATA, 0x02);
     outb(PIC_S_DATA, 0x01);
 
-    outb(PIC_M_DATA, 0xfe);
-    outb(PIC_S_DATA, 0xff);
+    // clock interrupt
+    // outb(PIC_M_DATA, 0xfe);
+    // outb(PIC_S_DATA, 0xff);
 
+    // test keyboard
+    outb(PIC_M_DATA, 0xfd);
+    outb(PIC_S_DATA, 0xff); 
+    
     put_str("   pic_init done\n");
 }
 
