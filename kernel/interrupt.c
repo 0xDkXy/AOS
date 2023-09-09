@@ -79,8 +79,8 @@ static void pic_init(void)
     // outb(PIC_M_DATA, 0xfe);
     // outb(PIC_S_DATA, 0xff);
 
-    // test keyboard
-    outb(PIC_M_DATA, 0xfd);
+    // keyboard and clock interrupt
+    outb(PIC_M_DATA, 0xfc);
     outb(PIC_S_DATA, 0xff); 
     
     put_str("   pic_init done\n");
