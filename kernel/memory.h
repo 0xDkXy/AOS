@@ -4,6 +4,8 @@
 #include "stdint.h"
 #include "kernel/bitmap.h"
 
+#define PG_SIZE 4096
+
 struct virtual_addr {
     struct bitmap vaddr_bitmap;
     uint32_t vaddr_start;

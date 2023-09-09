@@ -3,7 +3,7 @@ ENTRY_POINT = 0xc0001500
 AS = nasm
 CC = i386-elf-gcc
 LD = i386-elf-ld
-LIB = -I lib/ -I kernel/ -I thread/ -I device/
+LIB = -I lib/ -I kernel/ -I thread/ -I device/ -I userprog/
 ASFLAGS = -f elf
 CFLAGS = -Wall $(LIB) -c -fno-builtin -w -Wstrict-prototypes \
 		 -Wmissing-prototypes -Werror -Wimplicit-function-declaration 
@@ -18,7 +18,8 @@ OBJS = $(BUILD_DIR)/main.o $(BUILD_DIR)/init.o $(BUILD_DIR)/interrupt.o \
 	   $(BUILD_DIR)/sync.o	\
 	   $(BUILD_DIR)/console.o \
 	   $(BUILD_DIR)/keyboard.o \
-	   $(BUILD_DIR)/ioqueue.o
+	   $(BUILD_DIR)/ioqueue.o \
+	   $(BUILD_DIR)/tss.o
 	
 
 
@@ -40,6 +41,9 @@ $(BUILD_DIR)/%.o: thread/%.c
 	$(CC) $(CFLAGS) $< -o $@
 
 $(BUILD_DIR)/%.o: device/%.c
+	$(CC) $(CFLAGS) $< -o $@
+
+$(BUILD_DIR)/%.o: userprog/%.c
 	$(CC) $(CFLAGS) $< -o $@
 
 #################### compile Assembly #################### 

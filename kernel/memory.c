@@ -3,7 +3,6 @@
 #include "kernel/print.h"
 #include "debug.h"
 
-#define PG_SIZE 4096
 
 #define MEM_BITMAP_BASE 0xc009a000
 
