@@ -77,4 +77,14 @@ struct gdt_desc {
 #define IDT_DESC_ATTR_DPL3 \
     ((IDT_DESC_P << 7) + (IDT_DESC_DPL3 << 5) + IDT_DESC_32_TYPE)
 
+#define EFLAGS_MBS      (1 << 1)
+#define EFLAGS_IF_1     (1 << 9) // 1, open interrupt
+#define EFLAGS_IF_0     0 // 0, close interrupt
+#define EFLAGS_IOPL_3   (3 << 12) // To test user progrom io under non-system call.
+#define EFLAGS_IOPL_0   (0 << 12) // IOPL0
+#define NULL ((void*)0)
+#define DIV_ROUND_UP(X, STEP) ((X + STEP - 1) / (STEP))
+
+#define PG_SIZE 4096
+
 #endif

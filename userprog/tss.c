@@ -4,6 +4,7 @@
 #include "global.h"
 #include "string.h"
 #include "memory.h"
+#include "kernel/print.h"
 
 struct tss {
     uint32_t backlink;

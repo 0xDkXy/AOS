@@ -3,3 +3,7 @@ build
 *.out
 *.o
 *.bin
+*temp*
+*.sym
+.cache/*
+*.json

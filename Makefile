@@ -2,12 +2,14 @@ BUILD_DIR = ./build
 ENTRY_POINT = 0xc0001500
 AS = nasm
 CC = i386-elf-gcc
+#CC = gcc
 LD = i386-elf-ld
 LIB = -I lib/ -I kernel/ -I thread/ -I device/ -I userprog/
-ASFLAGS = -f elf
+ASFLAGS = -f elf -g 
 CFLAGS = -Wall $(LIB) -c -fno-builtin -w -Wstrict-prototypes \
-		 -Wmissing-prototypes -Werror -Wimplicit-function-declaration 
-LDFLAGS = -Ttext $(ENTRY_POINT) -e main -Map $(BUILD_DIR)/kernel.map
+		 -Wmissing-prototypes -Werror -Wimplicit-function-declaration -fno-stack-protector \
+		 -m32 -g
+LDFLAGS = -Ttext $(ENTRY_POINT) -e main -Map $(BUILD_DIR)/kernel.map -m elf_i386
 OBJS = $(BUILD_DIR)/main.o $(BUILD_DIR)/init.o $(BUILD_DIR)/interrupt.o \
 	   $(BUILD_DIR)/kernel.o $(BUILD_DIR)/print.o $(BUILD_DIR)/debug.o \
 	   $(BUILD_DIR)/string.o $(BUILD_DIR)/bitmap.o $(BUILD_DIR)/memory.o \
@@ -19,12 +21,15 @@ OBJS = $(BUILD_DIR)/main.o $(BUILD_DIR)/init.o $(BUILD_DIR)/interrupt.o \
 	   $(BUILD_DIR)/console.o \
 	   $(BUILD_DIR)/keyboard.o \
 	   $(BUILD_DIR)/ioqueue.o \
-	   $(BUILD_DIR)/tss.o
+	   $(BUILD_DIR)/tss.o \
+	   $(BUILD_DIR)/process.o
 	
 
 
 BOOTFLAGS = -I ./boot/include/
 BOOTOBJS = $(BUILD_DIR)/mbr.bin $(BUILD_DIR)/loader.bin
+
+.DEFAULT_GOAL=all
 
 
 #################### compile C #################### 
@@ -64,7 +69,7 @@ $(BUILD_DIR)/%.bin: boot/%.S
 $(BUILD_DIR)/kernel.bin: $(OBJS)
 	$(LD) $(LDFLAGS) $^ -o $@
 
-.PHONY: mk_dir hd clean all bochs
+.PHONY: mk_dir hd clean all bochs bochs-gdb compile_commands
 
 mk_dir:
 	if [[ ! -d $(BUILD_DIR) ]];then \
@@ -77,15 +82,25 @@ hd:
 			dd if=build/loader.bin of=hd60M.img bs=512 count=4 seek=2 conv=notrunc
 
 clean:
-	cd $(BUILD_DIR) && rm -f ./*
+	rm *.lock *temp* *.out *.sym;\
+		cd $(BUILD_DIR) && rm -f ./*
 
 build: $(BUILD_DIR)/kernel.bin $(BOOTOBJS)
 
-all: mk_dir build hd
+symbol: $(BUILD_DIR)/kernel.bin
+	i386-elf-objcopy --only-keep-debug $< kernel.sym
+
+all: mk_dir build hd symbol
 
 bochs: all
 	bochs -f ./bochsrc.disk
 
+bochs-gdb: all
+	/usr/local/src/bochs-2.7/bochs -f ./bochsrc-gdb.disk
+
+
+compile_commands: clean
+	bear -- make
 
 #
 #.PHONY: clean

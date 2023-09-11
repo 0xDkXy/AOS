@@ -3,6 +3,7 @@
 
 #include "stdint.h"
 #include "kernel/list.h"
+#include "memory.h"
 
 typedef void thread_func(void*);
 
@@ -66,11 +67,21 @@ struct task_struct {
     struct list_elem all_list_tag;
 
     uint32_t* pgdir;
-
+    struct virtual_addr userprog_vaddr;
     uint32_t stack_magic;
 };
 
 struct task_struct* running_thread();
+
+extern struct list thread_ready_list;
+extern struct list thread_all_list;
+
+void init_thread(struct task_struct* pthread, char* name, int prio);
+void thread_create(struct task_struct* pthread, thread_func function, void* func_arg);
+struct task_struct* thread_start(char* name, \
+                                 int prio,  \
+                                 thread_func function, \
+                                 void* func_arg);
 
 
 #endif

@@ -115,6 +115,7 @@ static void general_intr_handler(uint8_t vec_nr)
 
         put_str("\npage fault addr is ");
         put_int(page_fault_vaddr);
+        put_str("\n");
     }
     put_str("!!!!!!     excetion message end        !!!!!!\n");
     while(1);

@@ -28,5 +28,7 @@ enum pool_flags {
 
 
 void* get_kernel_pages(uint32_t pg_cnt);
+uint32_t addr_v2p(uint32_t vaddr);
+void* get_a_page(enum pool_flags pf, uint32_t vaddr);
 
 #endif
