@@ -2,6 +2,7 @@
 #include "stdint.h"
 #include "global.h"
 #include "kernel/io.h"
+#include "kernel/print.h"
 
 #define PIC_M_CTRL 0x20
 #define PIC_M_DATA 0x21
@@ -12,12 +13,10 @@
 
 // register eflag  IF = 1
 #define EFLAGS_IF 0x00000200 
-#define GET_EFLAGS(EFLAG_VAR) asm volatile("pushfl; popl %0" \
-        : "=g" (EFLAG_VAR) \
-        )
+#define GET_EFLAGS(EFLAG_VAR) \
+    asm volatile("pushfl; popl %0" : "=g" (EFLAG_VAR))
 
-struct gate_desc
-{
+struct gate_desc {
     uint16_t func_offset_low_word;
     uint16_t selector;
     uint8_t dcount;
@@ -76,12 +75,12 @@ static void pic_init(void)
     outb(PIC_S_DATA, 0x01);
 
     // clock interrupt
-    // outb(PIC_M_DATA, 0xfe);
-    // outb(PIC_S_DATA, 0xff);
+    outb(PIC_M_DATA, 0xfe);
+    outb(PIC_S_DATA, 0xff);
 
     // keyboard and clock interrupt
-    outb(PIC_M_DATA, 0xfc);
-    outb(PIC_S_DATA, 0xff); 
+    // outb(PIC_M_DATA, 0xfc);
+    // outb(PIC_S_DATA, 0xff); 
     
     put_str("   pic_init done\n");
 }
@@ -115,9 +114,8 @@ static void general_intr_handler(uint8_t vec_nr)
 
         put_str("\npage fault addr is ");
         put_int(page_fault_vaddr);
-        put_str("\n");
     }
-    put_str("!!!!!!     excetion message end        !!!!!!\n");
+    put_str("\n!!!!!!     excetion message end        !!!!!!\n");
     while(1);
 
 }
@@ -163,13 +161,10 @@ static void exception_init(void)
 enum intr_status intr_enable()
 {
     enum intr_status old_status;
-    if (INTR_ON == intr_get_status())
-    {
+    if (INTR_ON == intr_get_status()) {
         old_status = INTR_ON;
         return old_status;
-    }
-    else
-    {
+    } else {
         old_status = INTR_OFF;
         asm volatile("sti");
         return old_status;
@@ -179,8 +174,7 @@ enum intr_status intr_enable()
 enum intr_status intr_disable()
 {
     enum intr_status old_status;
-    if (INTR_ON == intr_get_status())
-    {
+    if (INTR_ON == intr_get_status()) {
         old_status = INTR_ON;
         asm volatile("cli" : : : "memory");
         return old_status;
@@ -216,7 +210,7 @@ void register_handler(uint8_t vector_no, intr_handler function)
  * */
 void idt_init()
 {
-    put_str("   idt_init start\n");
+    put_str("idt_init start\n");
     idt_desc_init(); // init the idt description
     // registing the interrupt handler
     // and init the name of exception

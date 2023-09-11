@@ -54,20 +54,22 @@ static void mem_pool_init(uint32_t all_mem)
     kernel_pool.pool_bitmap.bits = (void*)MEM_BITMAP_BASE;
     user_pool.pool_bitmap.bits = (void*)(MEM_BITMAP_BASE + kbm_length);
 
-    // put_str("   kernel_pool_bitmap_start:");
-    // put_int((int)kernel_pool.pool_bitmap.bits);
-    // put_str(" kernel_pool_phy_addr_start:");
-    // put_int(kernel_pool.phy_addr_start);
-    // put_str("\n");
-    // 
-    // put_str("user_pool_bitmap_start:");
-    // put_int((int)user_pool.pool_bitmap.bits);
-    // put_str(" user_pool_phy_addr_start:");
-    // put_int(user_pool.phy_addr_start);
-    // put_str("\n");
+    put_str("kernel_pool_bitmap_start:");
+    put_int((int)kernel_pool.pool_bitmap.bits);
+    put_str(" kernel_pool_phy_addr_start:");
+    put_int(kernel_pool.phy_addr_start);
+    put_str("\n");
+    
+    put_str("user_pool_bitmap_start:");
+    put_int((int)user_pool.pool_bitmap.bits);
+    put_str(" user_pool_phy_addr_start:");
+    put_int(user_pool.phy_addr_start);
+    put_str("\n");
 
     bitmap_init(&kernel_pool.pool_bitmap);
     bitmap_init(&user_pool.pool_bitmap);
+    lock_init(&kernel_pool.lock);
+    lock_init(&user_pool.lock);
 
     kernel_vaddr.vaddr_bitmap.btmp_bytes_len = kbm_length;
 
@@ -77,8 +79,6 @@ static void mem_pool_init(uint32_t all_mem)
     kernel_vaddr.vaddr_start = K_HEAP_START;
     bitmap_init(&kernel_vaddr.vaddr_bitmap);
 
-    lock_init(&kernel_pool.lock);
-    lock_init(&user_pool.lock);
 
     put_str("mem_pool_init done\n");
 
@@ -150,7 +150,6 @@ static void page_table_add(void* _vaddr, void* _page_phyaddr)
            *pte = (page_phyaddr | PG_US_U | PG_RW_W | PG_P_1);
        } else {
            PANIC("pte repeat");
-           *pte = (page_phyaddr | PG_US_U | PG_RW_W | PG_P_1);
        }
    } else {
        uint32_t pde_phyaddr = (uint32_t)palloc(&kernel_pool);
@@ -199,10 +198,12 @@ void* malloc_page(enum pool_flags pf, uint32_t pg_cnt)
 
 void* get_kernel_pages(uint32_t pg_cnt)
 {
+    lock_acquire(&kernel_pool.lock);
     void* vaddr = malloc_page(PF_KERNEL, pg_cnt);
     if (vaddr != NULL) {
         memset(vaddr, 0, pg_cnt * PG_SIZE);
     }
+    lock_release(&kernel_pool.lock);
     return vaddr;
 }
 

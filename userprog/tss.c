@@ -83,7 +83,7 @@ void tss_init()
         make_gdt_desc(
             (uint32_t*)0,
             0xfffff,
-            GDT_CODE_ATTR_LOW_DPL3,
+            GDT_DATA_ATTR_LOW_DPL3,
             GDT_ATTR_HIGH);
     uint64_t gdt_operand = \
         ((8 * 7 - 1) | ((uint64_t)(uint32_t)0xc0000900 << 16));
