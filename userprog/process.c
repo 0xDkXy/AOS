@@ -1,6 +1,7 @@
 #include "process.h"
 #include "memory.h"
 #include "global.h"
+#include "printk.h"
 #include "thread.h"
 #include "debug.h"
 #include "tss.h"
@@ -40,6 +41,8 @@ void start_process(void* filename_)
     proc_stack->cs = SELECTOR_U_CODE;
     proc_stack->eflags = (EFLAGS_IOPL_0 | EFLAGS_MBS | EFLAGS_IF_1);
     proc_stack->esp = (void*)((uint32_t)get_a_page(PF_USER, USER_STACK3_VADDR) + PG_SIZE);
+    printk("cs: 0x%x\n", SELECTOR_U_CODE);
+    printk("eip: 0x%x\n", proc_stack->eip);
     asm volatile ("movl %0, %%esp; jmp intr_exit" : : "g"(proc_stack) : "memory");
 }
 
