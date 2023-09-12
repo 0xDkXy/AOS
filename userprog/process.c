@@ -15,6 +15,8 @@ extern void intr_exit(void);
 
 void start_process(void* filename_)
 {
+    enum intr_status old_status = intr_disable();
+    ASSERT(intr_get_status() == INTR_OFF);
     void *function = filename_;
     struct task_struct* cur = running_thread();
     cur->self_kstack += sizeof(struct thread_stack);
@@ -41,11 +43,13 @@ void start_process(void* filename_)
     proc_stack->cs = SELECTOR_U_CODE;
     proc_stack->eflags = (EFLAGS_IOPL_0 | EFLAGS_MBS | EFLAGS_IF_1);
     proc_stack->esp = (void*)((uint32_t)get_a_page(PF_USER, USER_STACK3_VADDR) + PG_SIZE);
+    proc_stack->ss = SELECTOR_U_DATA;
     // printk("proc cs: 0x%x\n", SELECTOR_U_CODE);
     // printk("proc eip: 0x%x\n", proc_stack->eip);
     // if(intr_get_status() == INTR_OFF) {
     //     printk("start_process: INTR_OFF");
     // }
+    intr_set_status(old_status);
     asm volatile ("movl %0, %%esp; jmp intr_exit" : : "g"(proc_stack) : "memory");
 }
 
