@@ -178,14 +178,7 @@ void* malloc_page(enum pool_flags pf, uint32_t pg_cnt)
     struct pool* mem_pool = pf & PF_KERNEL ? &kernel_pool : &user_pool;
 
     while (cnt-- > 0) {
-        // put_str("cnt:");
-        // put_int(cnt);
-        // put_str("\n");
         void* page_phyaddr = palloc(mem_pool);
-
-        // put_str("kernel page phy addr:");
-        // put_int((uint32_t) page_phyaddr);
-        // put_str("\n");
 
         if (page_phyaddr == NULL) {
             return NULL;

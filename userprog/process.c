@@ -41,8 +41,8 @@ void start_process(void* filename_)
     proc_stack->cs = SELECTOR_U_CODE;
     proc_stack->eflags = (EFLAGS_IOPL_0 | EFLAGS_MBS | EFLAGS_IF_1);
     proc_stack->esp = (void*)((uint32_t)get_a_page(PF_USER, USER_STACK3_VADDR) + PG_SIZE);
-    printk("cs: 0x%x\n", SELECTOR_U_CODE);
-    printk("eip: 0x%x\n", proc_stack->eip);
+    printk("proc cs: 0x%x\n", SELECTOR_U_CODE);
+    printk("proc eip: 0x%x\n", proc_stack->eip);
     asm volatile ("movl %0, %%esp; jmp intr_exit" : : "g"(proc_stack) : "memory");
 }
 
@@ -52,9 +52,7 @@ void page_dir_activate(struct task_struct* p_thread)
     if (p_thread->pgdir != NULL) {
         put_str("\npgdir is not NULL, user process\n");
         pagedir_phy_addr = addr_v2p((uint32_t)p_thread->pgdir);
-        put_str("\n user pagedir physical address: ");
-        put_int(pagedir_phy_addr);
-        put_str("\n");
+        printk("user pagedir physical address: %x\n", pagedir_phy_addr);
     }
     asm volatile ("movl %0, %%cr3" : : "r" (pagedir_phy_addr) : "memory");
 }
@@ -107,7 +105,6 @@ void process_execute(void* filename, char* name)
     thread->pgdir = create_page_dir();
 
     enum intr_status old_status = intr_disable();
-    // put_str("\n elem_find 1\n");
     ASSERT(!elem_find(&thread_ready_list, &thread->general_tag));
     list_append(&thread_ready_list, &thread->general_tag);
     

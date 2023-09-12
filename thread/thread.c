@@ -26,7 +26,7 @@ struct task_struct* running_thread()
 
 static void kernel_thread(thread_func* function, void* func_arg)
 {
-    // intr_enable();
+    intr_enable();
     function(func_arg);
 }
 
