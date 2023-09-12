@@ -218,7 +218,8 @@ void idt_init()
     // init the 8259A
     pic_init();
 
-    uint64_t idt_operand = ((sizeof(idt) - 1) | ((uint64_t)((uint32_t)idt << 16)));
+    uint64_t idt_operand = ((sizeof(idt) - 1) | ((uint64_t)(uint32_t)idt << 16));
+    // put_str("idt addr: "); put_int((uint32_t)idt); put_str("\n");
     asm volatile("lidt %0"::"m"(idt_operand));
     put_str("idt_init done\n");
 }

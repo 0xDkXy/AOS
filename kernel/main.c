@@ -26,7 +26,7 @@ int main(void)
 
     // thread_start("k_thread_a", 31, k_thread_a, " A_");
     // thread_start("k_thread_b", 31, k_thread_b, " B_");
-    printk("u_prog_a addr: %x\n", u_prog_a);
+    // printk("u_prog_a addr: %x\n", u_prog_a);
     process_execute(u_prog_a, "user_prog_a");
     // process_execute(u_prog_b, "user_prog_b");
 

@@ -104,7 +104,7 @@ void schedule()
 {
     ASSERT(intr_get_status() == INTR_OFF);
 
-    put_str("\n schedule \n");
+    // put_str("\n schedule \n");
     struct task_struct* cur = running_thread();
     if (cur->status == TASK_RUNNING) {
         ASSERT(!elem_find(&thread_ready_list, &cur->general_tag));
