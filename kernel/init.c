@@ -6,6 +6,9 @@
 #include "thread.h"
 #include "../device/keyboard.h"
 #include "tss.h"
+#include "syscall-init.h"
+#include "thread.h"
+#include "console.h"
 
 void init_all()
 {
@@ -17,4 +20,5 @@ void init_all()
     console_init();
     keyboard_init();
     tss_init();
+    syscall_init();
 }

@@ -5,6 +5,8 @@
 #include "kernel/list.h"
 #include "memory.h"
 
+typedef int16_t pid_t;
+
 typedef void thread_func(void*);
 
 enum task_status {
@@ -54,6 +56,7 @@ struct thread_stack {
 
 struct task_struct {
     uint32_t* self_kstack;
+    pid_t pid;
     enum task_status status;
     char name[16];
     uint8_t priority;
@@ -84,6 +87,7 @@ struct task_struct* thread_start(char* name, \
 
 void thread_block(enum task_status stat);
 void thread_unblock(struct task_struct* pthread);
+void thread_init(void);
 
 
 #endif

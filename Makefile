@@ -23,7 +23,9 @@ OBJS = $(BUILD_DIR)/main.o $(BUILD_DIR)/init.o $(BUILD_DIR)/interrupt.o \
 	   $(BUILD_DIR)/ioqueue.o \
 	   $(BUILD_DIR)/tss.o \
 	   $(BUILD_DIR)/process.o \
-	   $(BUILD_DIR)/printk.o
+	   $(BUILD_DIR)/printk.o \
+	   $(BUILD_DIR)/syscall.o \
+	   $(BUILD_DIR)/syscall-init.o
 	
 
 
@@ -41,6 +43,9 @@ $(BUILD_DIR)/%.o: lib/%.c
 	$(CC) $(CFLAGS) $< -o $@
 
 $(BUILD_DIR)/%.o: lib/kernel/%.c
+	$(CC) $(CFLAGS) $< -o $@
+
+$(BUILD_DIR)/%.o: lib/user/%.c
 	$(CC) $(CFLAGS) $< -o $@
 
 $(BUILD_DIR)/%.o: thread/%.c

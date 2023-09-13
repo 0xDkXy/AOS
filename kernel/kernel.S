@@ -97,3 +97,28 @@ VECTOR 0x2c, ZERO ; ps/2 mouse
 VECTOR 0x2d, ZERO ; fpu exception
 VECTOR 0x2e, ZERO ; hard disk
 VECTOR 0x2f, ZERO
+
+[bits 32]
+extern syscall_table
+section .text
+global syscall_handler
+syscall_handler:
+    push 0;
+    
+    push ds
+    push es
+    push fs
+    push gs
+    pushad
+
+    push 0x80
+
+    push edx
+    push ecx
+    push eax
+
+    call [syscall_table + eax * 4]
+    add esp, 12
+
+    mov [esp + 8*4], eax ; write into eax in the stack, pushad will push eax first
+    jmp intr_exit

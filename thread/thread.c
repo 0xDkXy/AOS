@@ -7,6 +7,7 @@
 #include "debug.h"
 #include "process.h"
 #include "kernel/print.h"
+#include "sync.h"
 
 #define PG_SIZE 4096
 
@@ -14,6 +15,8 @@ struct task_struct* main_thread;
 struct list thread_ready_list;
 struct list thread_all_list;
 static struct list_elem* thread_tag;
+
+struct lock pid_lock;
 
 extern void switch_to(struct task_struct* cur, struct task_struct* next);
 
@@ -28,6 +31,15 @@ static void kernel_thread(thread_func* function, void* func_arg)
 {
     intr_enable();
     function(func_arg);
+}
+
+static pid_t allocate_pid(void)
+{
+    static pid_t next_pid = 0;
+    lock_acquire(&pid_lock);
+    next_pid++;
+    lock_release(&pid_lock);
+    return next_pid;
 }
 
 void thread_create(struct task_struct* pthread, thread_func function, void* func_arg)
@@ -50,6 +62,7 @@ void thread_create(struct task_struct* pthread, thread_func function, void* func
 void init_thread(struct task_struct* pthread, char* name, int prio)
 {
     memset(pthread, 0, sizeof(*pthread));
+    pthread->pid = allocate_pid();
     strcpy(pthread->name, name);
 
     if (pthread == main_thread) {
@@ -161,6 +174,7 @@ void thread_init(void)
     put_str("thread_init start\n");
     list_init(&thread_ready_list);
     list_init(&thread_all_list);
+    lock_init(&pid_lock);
     make_main_thread();
     put_str("thread_init done\n");
 }
