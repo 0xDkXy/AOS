@@ -115,7 +115,7 @@ syscall_handler:
 
     push edx
     push ecx
-    push eax
+    push ebx
 
     call [syscall_table + eax * 4]
     add esp, 12
