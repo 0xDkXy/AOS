@@ -3,6 +3,7 @@
 
 #include "stdint.h"
 #include "kernel/bitmap.h"
+#include "kernel/list.h"
 
 #define PG_SIZE 4096
 
@@ -10,6 +11,18 @@ struct virtual_addr {
     struct bitmap vaddr_bitmap;
     uint32_t vaddr_start;
 };
+
+struct mem_block {
+    struct list_elem free_elem;
+};
+
+struct mem_block_desc {
+    uint32_t block_size;
+    uint32_t block_per_arena;
+    struct list free_list;
+};
+
+#define DESC_CNT 7
 
 extern struct pool kernel_pool, user_pool;
 void mem_init(void);
@@ -30,5 +43,8 @@ enum pool_flags {
 void* get_kernel_pages(uint32_t pg_cnt);
 uint32_t addr_v2p(uint32_t vaddr);
 void* get_a_page(enum pool_flags pf, uint32_t vaddr);
+
+void block_desc_init(struct mem_block_desc* desc_array);
+void* sys_malloc(uint32_t size);
 
 #endif
