@@ -100,6 +100,7 @@ void u_prog_a(void)
     free(addr1);
     free(addr2);
     free(addr3);
+    while(1);
 }
 
 void u_prog_b(void)
@@ -114,4 +115,5 @@ void u_prog_b(void)
     free(addr1);
     free(addr2);
     free(addr3);
+    while(1);
 }
