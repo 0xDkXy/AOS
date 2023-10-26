@@ -8,7 +8,6 @@
 #include "keyboard.h"
 #include "ioqueue.h"
 #include "process.h"
-#include "printk.h"
 #include "user/syscall.h"
 #include "syscall-init.h"
 #include "stdio.h"
