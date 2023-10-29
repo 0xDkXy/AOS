@@ -5,6 +5,7 @@
 #include "kernel/list.h"
 #include "kernel/bitmap.h"
 #include "thread.h"
+#include "sync.h"
 
 struct partition {
     uint32_t start_lba;
@@ -35,5 +36,8 @@ struct ide_channel {
     struct semaphore disk_done;
     struct disk devices[2];
 };
+
+// function declare
+void ide_init();
 
 #endif // __IDE_H

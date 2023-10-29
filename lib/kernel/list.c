@@ -93,7 +93,7 @@ bool elem_find(struct list* plist, struct list_elem* obj_elem)
 }
 
 
-struct list_elem* list_traversal(struct list* plist, function func, int arg)
+struct list_elem* list_traversal(struct list* plist, function* func, int arg)
 {
     struct list_elem* elem = plist->head.next;
 

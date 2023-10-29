@@ -7,3 +7,4 @@ build
 *.sym
 .cache/*
 *.json
+*.tmp

@@ -19,5 +19,8 @@ struct lock {
 void lock_acquire(struct lock* plock);
 void lock_release(struct lock* plock);
 void lock_init(struct lock* plock);
+void sema_init(struct semaphore* psema, uint8_t value);
+void sema_down(struct semaphore*);
+void sema_up(struct semaphore*);
 
 #endif

@@ -25,7 +25,9 @@ OBJS = $(BUILD_DIR)/main.o $(BUILD_DIR)/init.o $(BUILD_DIR)/interrupt.o \
 	   $(BUILD_DIR)/process.o \
 	   $(BUILD_DIR)/syscall.o \
 	   $(BUILD_DIR)/syscall-init.o \
-	   $(BUILD_DIR)/stdio.o
+	   $(BUILD_DIR)/stdio.o \
+	   $(BUILD_DIR)/stdio-kernel.o \
+	   $(BUILD_DIR)/ide.o
 	
 
 

@@ -1,4 +1,5 @@
 #include "thread.h"
+#include "kernel/list.h"
 #include "stdint.h"
 #include "string.h"
 #include "global.h"
@@ -19,6 +20,16 @@ static struct list_elem* thread_tag;
 struct lock pid_lock;
 
 extern void switch_to(struct task_struct* cur, struct task_struct* next);
+
+struct task_struct* idle_thread;
+
+static void idle(void* arg __attribute__((unused)))
+{
+    while (1) {
+        thread_block(TASK_BLOCKED);
+        asm volatile ("sti; hlt" : : : "memory");
+    }
+}
 
 struct task_struct* running_thread()
 {
@@ -119,6 +130,11 @@ void schedule()
 
     // put_str("\n schedule \n");
     struct task_struct* cur = running_thread();
+
+    // if (list_empty(&thread_ready_list)) {
+    //     thread_unblock(idle_thread);
+    // }
+
     if (cur->status == TASK_RUNNING) {
         ASSERT(!elem_find(&thread_ready_list, &cur->general_tag));
         list_append(&thread_ready_list, &cur->general_tag);
@@ -126,6 +142,10 @@ void schedule()
         cur->status = TASK_READY;
     } else {
         ;
+    }
+
+    if (list_empty(&thread_ready_list)) {
+        thread_unblock(idle_thread);
     }
 
     ASSERT(!list_empty(&thread_ready_list));
@@ -169,6 +189,22 @@ void thread_unblock(struct task_struct* pthread)
     intr_set_status(old_status);
 }
 
+void thread_yield(void)
+{
+    struct task_struct* cur = running_thread();
+    enum intr_status old_status = intr_disable();
+
+    // if (list_empty(&thread_ready_list)) {
+    //     thread_unblock(idle_thread);
+    // }
+
+    ASSERT(!elem_find(&thread_ready_list, &cur->general_tag));
+    list_append(&thread_ready_list, &cur->general_tag);
+    cur->status = TASK_READY;
+    schedule();
+    intr_set_status(old_status);
+}
+
 void thread_init(void)
 {
     put_str("thread_init start\n");
@@ -176,5 +212,6 @@ void thread_init(void)
     list_init(&thread_all_list);
     lock_init(&pid_lock);
     make_main_thread();
+    idle_thread = thread_start("idle", 5, idle, NULL);
     put_str("thread_init done\n");
 }
