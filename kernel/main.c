@@ -11,6 +11,7 @@
 #include "user/syscall.h"
 #include "syscall-init.h"
 #include "stdio.h"
+#include "stdio-kernel.h"
 
 
 int main(void);
@@ -36,10 +37,10 @@ int main(void)
     // console_put_int(sys_getpid());
     // console_put_str("\n");
 
-    process_execute(u_prog_a, "user_prog_a");
-    process_execute(u_prog_b, "user_prog_b");
-    thread_start("k_thread_a", 31, k_thread_a, "I am thread_a");
-    thread_start("k_thread_b", 31, k_thread_b, "I am thread_b");
+    // process_execute(u_prog_a, "user_prog_a");
+    // process_execute(u_prog_b, "user_prog_b");
+    // thread_start("k_thread_a", 31, k_thread_a, "I am thread_a");
+    // thread_start("k_thread_b", 31, k_thread_b, "I am thread_b");
 
     while(1);
     return 0;
@@ -47,43 +48,35 @@ int main(void)
 
 void k_thread_a(void* arg)
 {
-    void* addr1 = sys_malloc(256);
-    void* addr2 = sys_malloc(255);
-    void* addr3 = sys_malloc(254);
-    console_put_str("thread_a malloc addr: 0x");
-    console_put_int((uint32_t)addr1);
-    console_put_char(',');
-    console_put_int((uint32_t)addr2);
-    console_put_char(',');
-    console_put_int((uint32_t)addr3);
-    console_put_char('\n');
-
-    int cpu_delay = 1000000;
-    while (cpu_delay-- > 0);
-    sys_free(addr1);
-    sys_free(addr2);
-    sys_free(addr3);
+    uint32_t i = 500;
+    while (i-- > 1) {
+        printk("A: Times: %d\n", i);
+        void* addr1 = sys_malloc(i);
+        void* addr2 = sys_malloc(i);
+        void* addr3 = sys_malloc(i);
+        thread_yield();
+        sys_free(addr1);
+        sys_free(addr2);
+        sys_free(addr3);
+    }
+    printk("test A done\n");
     while(1);
 }
 
 void k_thread_b(void* arg)
 {
-    void* addr1 = sys_malloc(256);
-    void* addr2 = sys_malloc(255);
-    void* addr3 = sys_malloc(254);
-    console_put_str("thread_b malloc addr: 0x");
-    console_put_int((uint32_t)addr1);
-    console_put_char(',');
-    console_put_int((uint32_t)addr2);
-    console_put_char(',');
-    console_put_int((uint32_t)addr3);
-    console_put_char('\n');
-
-    int cpu_delay = 1000000;
-    while (cpu_delay-- > 0);
-    sys_free(addr1);
-    sys_free(addr2);
-    sys_free(addr3);
+    uint32_t i = 500;
+    while (i-- > 1) {
+        printk("B: Times: %d\n", i);
+        void* addr1 = sys_malloc(i);
+        void* addr2 = sys_malloc(i);
+        void* addr3 = sys_malloc(i);
+        thread_yield();
+        sys_free(addr1);
+        sys_free(addr2);
+        sys_free(addr3);
+    }
+    printk("test B done\n");
     while(1);
 }
 

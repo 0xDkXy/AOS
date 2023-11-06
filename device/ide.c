@@ -11,6 +11,7 @@
 #include "sync.h"
 #include "timer.h"
 #include <string.h>
+#include "memory.h"
 
 #define     reg_data(channel)       (channel->port_base + 0)
 #define     reg_error(channel)      (channel->port_base + 1)

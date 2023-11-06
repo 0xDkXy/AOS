@@ -5,10 +5,11 @@
 #include "stdint.h"
 #include "kernel/print.h"
 #include "debug.h"
+#include "stdio-kernel.h"
 #include "sync.h"
 #include "string.h"
 #include "thread.h"
-#include "stdbool.h"
+#include <stdbool.h>
 
 #define MEM_BITMAP_BASE 0xc009a000
 
@@ -350,7 +351,7 @@ void* sys_malloc(uint32_t size)
         }
 
         if (list_empty(&descs[desc_idx].free_list)) {
-            a = malloc_page(PF, 1);
+            a = (struct arena*)malloc_page(PF, 1);
             if (a == NULL) {
                 lock_release(&mem_pool->lock);
                 return NULL;
@@ -358,7 +359,8 @@ void* sys_malloc(uint32_t size)
             memset(a, 0, PG_SIZE);
 
             // init arena attr
-            a->desc = &descs[desc_idx];
+            a->desc = &(descs[desc_idx]);
+            // printk("alloc: a->desc: 0x%x\n", (uint32_t)a->desc);
             a->large = false;
             a->cnt = descs[desc_idx].block_per_arena;
             uint32_t block_idx;
@@ -379,8 +381,22 @@ void* sys_malloc(uint32_t size)
         a = block2arena(b);
         a->cnt--;
         lock_release(&mem_pool->lock);
+        // printk("alloc: a->desc: 0x%x before return\n", (uint32_t)a->desc);
         return (void*)b;
     }
+}
+
+void check_arena(void* b)
+{
+    static uint32_t num = 0;
+    struct arena* a = block2arena((struct mem_block*)b);
+    printk("\n****************************\n");
+    printk("\ncheck arena %d times:\n", num++);
+    printk("arena address:  0x%x\n", (uint32_t)a);
+    printk("arena->desc:    0x%x\n", a->desc);
+    printk("arena->cnt:     %d\n", a->cnt);
+    printk("arena->large:   %d\n", (uint32_t)a->large);
+    printk("\n****************************\n");
 }
 
 // recycle memory
@@ -486,6 +502,7 @@ void sys_free(void* ptr)
         lock_acquire(&mem_pool->lock);
         struct mem_block* b = ptr;
         struct arena* a = block2arena(b);
+        // printk("free: a->desc: 0x%x\n", a->desc);
 
         ASSERT(a->large == 0 || a->large == 1);
         if (a->desc == NULL && a->large == true) {

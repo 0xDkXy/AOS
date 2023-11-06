@@ -10,5 +10,8 @@
 void process_activate(struct task_struct* p_thread);
 void process_execute(void* filename, char* name);
 
+// debug
+void print_cr3();
+
 
 #endif // __USERPROG_PROCESS_H

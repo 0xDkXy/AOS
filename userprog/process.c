@@ -1,6 +1,7 @@
 #include "process.h"
 #include "memory.h"
 #include "global.h"
+#include "stdio-kernel.h"
 #include "thread.h"
 #include "debug.h"
 #include "tss.h"
@@ -47,13 +48,47 @@ void start_process(void* filename_)
     asm volatile ("movl %0, %%esp; jmp intr_exit" : : "g"(proc_stack) : "memory");
 }
 
+
+void set_cr3_register(uint32_t pagedir_phy_addr)
+{
+    asm volatile ("movl %0, %%cr3" : : "r" (pagedir_phy_addr) : "memory");
+    // asm volatile ("movl %0, %%cr3" : : "r" (pagedir_phy_addr));
+}
+
+uint32_t get_cr3()
+{
+    uint32_t cr3_val = 0;
+    asm volatile ( "movl %%cr3, %0" :"=r"(cr3_val) : : "memory");
+    return cr3_val;
+}
+
 void page_dir_activate(struct task_struct* p_thread)
 {
     uint32_t pagedir_phy_addr = 0x100000;
     if (p_thread->pgdir != NULL) {
         pagedir_phy_addr = addr_v2p((uint32_t)p_thread->pgdir);
     }
-    asm volatile ("movl %0, %%cr3" : : "r" (pagedir_phy_addr) : "memory");
+
+    // BUG: without this if, the memory values will be overwrite sometimes.
+    // for instance, in `filesys_init()` +155, invoking `ide_read()`.
+    // the arena of `sb_buf` will be overwrite to zero after set CR3 register
+    // even the page dir physical address is the same as before. WEIRD!
+    // if (get_cr3() == pagedir_phy_addr) {
+    //     return;
+    // }
+
+    // print_cr3();
+    set_cr3_register(pagedir_phy_addr);
+    // print_cr3();
+}
+
+
+void print_cr3()
+{
+    uint32_t cr3_val = get_cr3();
+    printk("\n*********************\n");
+    printk("CR3: 0x%x\n", cr3_val);
+    printk("\n*********************\n");
 }
 
 void process_activate(struct task_struct* p_thread) 

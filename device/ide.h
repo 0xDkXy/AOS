@@ -37,7 +37,13 @@ struct ide_channel {
     struct disk devices[2];
 };
 
+extern uint8_t channel_cnt;
+extern struct ide_channel channels[2];
+extern struct list partition_list;
+
 // function declare
 void ide_init();
+void ide_write(struct disk*, uint32_t , void* , uint32_t );
+void ide_read(struct disk*, uint32_t, void*, uint32_t);
 
 #endif // __IDE_H
