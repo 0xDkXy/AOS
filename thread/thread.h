@@ -54,6 +54,8 @@ struct thread_stack {
     void* func_arg;
 };
 
+#define MAX_FILES_OPEN_PER_PROC 8
+
 struct task_struct {
     uint32_t* self_kstack;
     pid_t pid;
@@ -63,6 +65,8 @@ struct task_struct {
     uint8_t ticks;
 
     uint32_t elapsed_ticks;
+
+    int32_t fd_table[MAX_FILES_OPEN_PER_PROC];
 
     struct list_elem general_tag;
 
