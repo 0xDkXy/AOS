@@ -1,6 +1,7 @@
 #ifndef __FS_FS_H
 #define __FS_FS_H
 
+#include "stdint.h"
 
 #define MAX_FILES_PER_PART  4096
 #define BITS_PER_SECTOR     4096
@@ -32,5 +33,6 @@ extern struct partition* cur_part;
 
 // function declarations
 void filesys_init();
+int32_t sys_open(const char* pathname, uint8_t flags);
 
 #endif // __FS_FS_H

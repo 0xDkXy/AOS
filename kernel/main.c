@@ -1,3 +1,4 @@
+#include "fs.h"
 #include "kernel/print.h"
 #include "init.h"
 #include "debug.h"
@@ -42,6 +43,7 @@ int main(void)
     // thread_start("k_thread_a", 31, k_thread_a, "I am thread_a");
     // thread_start("k_thread_b", 31, k_thread_b, "I am thread_b");
 
+    sys_open("/file2", O_CREAT);
     while(1);
     return 0;
 }

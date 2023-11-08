@@ -28,7 +28,10 @@ OBJS = $(BUILD_DIR)/main.o $(BUILD_DIR)/init.o $(BUILD_DIR)/interrupt.o \
 	   $(BUILD_DIR)/stdio.o \
 	   $(BUILD_DIR)/stdio-kernel.o \
 	   $(BUILD_DIR)/ide.o \
-	   $(BUILD_DIR)/fs.o
+	   $(BUILD_DIR)/fs.o \
+	   $(BUILD_DIR)/file.o \
+	   $(BUILD_DIR)/dir.o \
+	   $(BUILD_DIR)/inode.o
 	
 
 

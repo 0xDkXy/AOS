@@ -19,5 +19,7 @@ struct inode {
 
 struct inode* inode_open(struct partition* part, uint32_t inode_no);
 void inode_close(struct inode* inode);
+void inode_init(uint32_t inode_no, struct inode* new_inode);
+void inode_sync(struct partition* part, struct inode* inode, void* io_buf);
 
 #endif // __FS_INODE_H
