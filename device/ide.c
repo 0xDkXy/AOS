@@ -62,7 +62,7 @@ struct partition_table_entry {
     uint8_t end_sec;
     uint8_t end_chs;
     uint32_t start_lba;
-    uint32_t sec_cnt;   // sector count of this partiton
+    uint32_t sec_cnt;   // sector count of this partition
 } __attribute__ ((packed));
 
 struct boot_sector {

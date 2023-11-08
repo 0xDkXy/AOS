@@ -19,4 +19,10 @@ struct dir_entry {
     enum file_types f_type;
 };
 
+extern struct dir root_dir;
+
+bool search_dir_entry(struct partition* part, struct dir* pdir, const char* name, struct dir_entry* dir_e);
+void dir_close(struct dir* dir);
+struct dir* dir_open(struct partition* part, uint32_t inode_no);
+
 #endif // __FS_DIR_H

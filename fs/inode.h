@@ -16,4 +16,8 @@ struct inode {
     struct list_elem inode_tag;
 };
 
+
+struct inode* inode_open(struct partition* part, uint32_t inode_no);
+void inode_close(struct inode* inode);
+
 #endif // __FS_INODE_H
