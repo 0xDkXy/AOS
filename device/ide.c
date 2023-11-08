@@ -185,7 +185,7 @@ void ide_write(struct disk* hd, uint32_t lba, void* buf, uint32_t sec_cnt)
     uint32_t secs_per_op;
     uint32_t secs_done = 0;
     while (secs_done < sec_cnt) {
-        secs_per_op = secs_done + 256 <= secs_per_op ? 256 : sec_cnt - secs_done;
+        secs_per_op = secs_done + 256 <= sec_cnt ? 256 : sec_cnt - secs_done;
 
         select_sector(hd, lba + secs_done, secs_per_op);
 
