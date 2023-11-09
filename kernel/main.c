@@ -43,7 +43,10 @@ int main(void)
     // thread_start("k_thread_a", 31, k_thread_a, "I am thread_a");
     // thread_start("k_thread_b", 31, k_thread_b, "I am thread_b");
 
-    sys_open("/file2", O_CREAT);
+    uint32_t fd = sys_open("/file2", O_RDONLY);
+    printk("fd: %d\n", fd);
+    sys_close(fd);
+    printk("%d closed now\n", fd);
     while(1);
     return 0;
 }
