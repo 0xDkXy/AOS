@@ -35,5 +35,6 @@ extern struct partition* cur_part;
 void filesys_init();
 int32_t sys_open(const char* pathname, uint8_t flags);
 int32_t sys_close(int32_t fd);
+int32_t sys_write(int32_t fd, const void* buf, uint32_t count);
 
 #endif // __FS_FS_H
