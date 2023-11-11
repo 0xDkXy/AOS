@@ -13,6 +13,7 @@
 #include "syscall-init.h"
 #include "stdio.h"
 #include "stdio-kernel.h"
+#include "string.h"
 
 
 int main(void);
@@ -48,11 +49,36 @@ int main(void)
     // sys_close(fd);
     // printk("%d closed now\n", fd);
 
+    // uint32_t fd = sys_open("/file2", O_RDWR);
+    // printk("fd: %d\n", fd);
+    // sys_write(fd, "hello,world\n", 12);
+    // sys_close(fd);
+    // printk("%d closed now\n", fd);
+
+
     uint32_t fd = sys_open("/file2", O_RDWR);
-    printk("fd: %d\n", fd);
-    sys_write(fd, "hello,world\n", 12);
+    printf("open /file2, fd: %d\n", fd);
+    char buf[64] = {0};
+    int read_bytes = sys_read(fd, buf, 18);
+    printf("1_ read %d bytes:\n%s\n", read_bytes, buf);
+
+    memset(buf, 0, 64);
+    read_bytes = sys_read(fd, buf, 6);
+    printf("2_ read %d bytes:\n%s\n", read_bytes, buf);
+
+    memset(buf, 0, 64);
+    read_bytes = sys_read(fd, buf, 6);
+    printf("3_ read %d bytes:\n%s\n", read_bytes, buf);
+
+    printf("____ close file2 and reopen ____\n");
     sys_close(fd);
-    printk("%d closed now\n", fd);
+    fd = sys_open("/file2", O_RDWR);
+    memset(buf, 0 ,64);
+    read_bytes = sys_read(fd, buf, 24);
+    printf("4_ read %d bytes:\n%s\n", read_bytes, buf);
+
+    sys_close(fd);
+
     while(1);
     return 0;
 }
