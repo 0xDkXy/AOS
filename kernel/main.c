@@ -70,9 +70,8 @@ int main(void)
     read_bytes = sys_read(fd, buf, 6);
     printf("3_ read %d bytes:\n%s\n", read_bytes, buf);
 
-    printf("____ close file2 and reopen ____\n");
-    sys_close(fd);
-    fd = sys_open("/file2", O_RDWR);
+    printf("____ SEEK_SET 0 ----\n");
+    sys_lseek(fd, 0 ,SEEK_SET);
     memset(buf, 0 ,64);
     read_bytes = sys_read(fd, buf, 24);
     printf("4_ read %d bytes:\n%s\n", read_bytes, buf);
