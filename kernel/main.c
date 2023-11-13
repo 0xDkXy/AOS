@@ -45,26 +45,38 @@ int main(void)
     // thread_start("k_thread_a", 31, k_thread_a, "I am thread_a");
     // thread_start("k_thread_b", 31, k_thread_b, "I am thread_b");
 
-    struct dir* p_dir = sys_opendir("/dir1/subdir1");
-    if (p_dir) {
-        printf("/dir1/subdir1 open done\ncontent:\n");
-        char* type = NULL;
-        struct dir_entry* dir_e = NULL;
-        while ((dir_e = sys_readdir(p_dir))) {
-            if (dir_e->f_type == FT_REGULAR) {
-                type = "regular";
-            } else {
-                type = "directory";
-            }
-            printf("    %s  %s\n", type, dir_e->filename);
-        }
-        if (sys_closedir(p_dir) == 0) {
-            printf("/dir1/subdir1 close done!\n");
-        } else {
-            printf("/dir1/subdir1 close failed!\n");
-        }
-    } else {
-        printf("/dir1/subdir1 open failed!\n");
+    printf("\n/dir1 content before delete /dir1/subdir1:\n");
+    struct dir* dir = sys_opendir("/dir1/");
+    char* type = NULL;
+    struct dir_entry* dir_e = NULL;
+    while ((dir_e = sys_readdir(dir))) {
+        type = dir_e->f_type == FT_REGULAR ? "regular" : "directory";
+        printf("    %s  %s\n", type, dir_e->filename);
+    }
+    printf("\ntry to delete nonempty directory /dir1/subdir1\n");
+    if (sys_rmdir("/dir1/subdir1") == -1) {
+        printf("sys_rmdir: /dir1/subdir1 delete failed!\n");
+    }
+
+    printf("\ntry to delete /dir1/subdir1/file2\n");
+    if (sys_rmdir("/dir1/subdir1/file2") == -1) {
+        printf("sys_rmdir: /dir1/subdir1/file2 delete failed!\n");
+    }
+
+    if (sys_unlink("/dir1/subdir1/file2") == 0) {
+        printf("sys_unlink: /dir1/subdir1/file2 delete done!\n");
+    }
+
+    printf("\ntry to delete directory /dir1/subdir1 again\n");
+    if (sys_rmdir("/dir1/subdir1") == 0) {
+        printf("/dir1/subdir1 delete failed!\n");
+    }
+
+    printf("/dir1 content after delete /dir1/subdir1:\n");
+    sys_rewinddir(dir);
+    while ((dir_e = sys_readdir(dir))) {
+        type = dir_e->f_type == FT_REGULAR ? "regular" : "directory";
+        printf("    %s  %s\n", type, dir_e->filename);
     }
 
 
