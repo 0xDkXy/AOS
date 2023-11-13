@@ -1,6 +1,6 @@
 # AOS
 
-It is an operating system kernel made by myself.
+It is an operating system kernel made from strach by myself.
 
 Just for fun.
 
@@ -8,4 +8,11 @@ Just for fun.
 
 - [ ] support QEMU
 - [ ] support GRUB as bootloader
-- [ ] user mode
+- [x] user mode
+- [x] file system
+- [x] disk driver
+- [ ] fork
+- [ ] shell
+- [ ] copy-on-write
+- [ ] network driver
+- [ ] support RISC-V
