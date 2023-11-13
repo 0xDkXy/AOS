@@ -97,7 +97,7 @@ void init_thread(struct task_struct* pthread, char* name, int prio)
         pthread->fd_table[fd_idx] = -1;
     }
     
-
+    pthread->cwd_inode_num = 0;
     pthread->stack_magic = 0x19870916;
 }
 
