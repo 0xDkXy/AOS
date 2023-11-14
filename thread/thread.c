@@ -53,6 +53,11 @@ static pid_t allocate_pid(void)
     return next_pid;
 }
 
+pid_t fork_pid(void)
+{
+    return allocate_pid();
+}
+
 void thread_create(struct task_struct* pthread, thread_func function, void* func_arg)
 {
     pthread->self_kstack -= sizeof(struct intr_stack);
@@ -98,6 +103,7 @@ void init_thread(struct task_struct* pthread, char* name, int prio)
     }
     
     pthread->cwd_inode_num = 0;
+    pthread->parent_pid = -1;
     pthread->stack_magic = 0x19870916;
 }
 
@@ -216,13 +222,21 @@ void thread_yield(void)
     intr_set_status(old_status);
 }
 
+extern void init(void); // in kernel/main.c
+
 void thread_init(void)
 {
     put_str("thread_init start\n");
     list_init(&thread_ready_list);
     list_init(&thread_all_list);
+
     lock_init(&pid_lock);
+
+    process_execute(init, "init");
+
     make_main_thread();
+
     idle_thread = thread_start("idle", 5, idle, NULL);
+
     put_str("thread_init done\n");
 }

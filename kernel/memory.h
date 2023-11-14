@@ -49,4 +49,7 @@ void* sys_malloc(uint32_t size);
 void sys_free(void* ptr);
 void check_arena(void*);
 
+void* get_a_page_without_opVAddrBitmap(enum pool_flags pf, uint32_t vaddr);
+void mfree_page(enum pool_flags pf, void* _vaddr, uint32_t pg_cnt);
+
 #endif

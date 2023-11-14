@@ -45,6 +45,7 @@ int main(void)
     // thread_start("k_thread_a", 31, k_thread_a, "I am thread_a");
     // thread_start("k_thread_b", 31, k_thread_b, "I am thread_b");
 
+    /*
     struct stat obj_stat;
     sys_stat("/", &obj_stat);
     printf("/ info:\n   i_no: %d\n  size: %d\n  filetype: %s\n",
@@ -55,9 +56,22 @@ int main(void)
     printf("/dir1 info:\n   i_no: %d\n  size: %d\n  filetype: %s\n",
             obj_stat.st_ino, obj_stat.st_size, 
             obj_stat.st_filetype == 2 ? "directory" : "regular");
+    */
+
 
     while(1);
     return 0;
+}
+
+void init(void)
+{
+    uint32_t ret_pid = fork();
+    if (ret_pid) {
+        printf("[PID %d] I am parent, child's pid: %d\n", getpid(), ret_pid);
+    } else {
+        printf("[PID %d] I am child, ret_pid: %d\n", getpid(), ret_pid);
+    }
+    while(1);
 }
 
 void k_thread_a(void* arg)
