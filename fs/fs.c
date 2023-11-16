@@ -2,7 +2,9 @@
 #include "console.h"
 #include "global.h"
 #include "ide.h"
+#include "ioqueue.h"
 #include "kernel/list.h"
+#include "keyboard.h"
 #include "memory.h"
 #include "stdint.h"
 #include "inode.h"
@@ -252,7 +254,7 @@ void filesys_init()
     }
 }
 
-static char* path_parse(char* pathname, char* name_store) 
+char* path_parse(char* pathname, char* name_store) 
 {
     if (pathname[0] == '/') {
         while (*(++pathname) == '/');
@@ -445,13 +447,24 @@ int32_t sys_write(int32_t fd, const void* buf, uint32_t count)
 
 int32_t sys_read(int32_t fd, void* buf, uint32_t count)
 {
-    if (fd < 0) {
-        printk("sys_read: fd error\n");
-        return -1;
-    }
     ASSERT(buf != NULL);
-    uint32_t _fd = fd_local2global(fd);
-    return file_read(&file_table[_fd], buf, count);
+    int32_t ret = -1;
+    if (fd < 0 || fd == stdout_no || fd == stderr_no) {
+        printk("sys_read: fd error\n");
+    } else if (fd == stdin_no) {
+        char* buffer = buf;
+        uint32_t bytes_read = 0;
+        while (bytes_read < count) {
+            *buffer = ioq_getchar(&kbd_buf);
+            bytes_read++;
+            buffer++;
+        }
+        ret = (bytes_read == 0 ? -1 : (int32_t)bytes_read);
+    } else {
+        uint32_t _fd = fd_local2global(fd);
+        ret = file_read(&file_table[_fd], buf, count);
+    }
+    return ret;
 }
 
 int32_t sys_lseek(int32_t fd, int32_t offset, uint8_t whence)
@@ -847,3 +860,4 @@ int32_t sys_stat(const char* path, struct stat* buf)
     dir_close(searched_record.parent_dir);
     return ret;
 }
+

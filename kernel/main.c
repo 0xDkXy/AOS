@@ -15,6 +15,8 @@
 #include "stdio-kernel.h"
 #include "string.h"
 #include "dir.h"
+#include "shell.h"
+#include "user/assert.h"
 
 
 int main(void);
@@ -57,6 +59,8 @@ int main(void)
             obj_stat.st_ino, obj_stat.st_size, 
             obj_stat.st_filetype == 2 ? "directory" : "regular");
     */
+    cls_screen();
+    printf("[MAIN]: ENTER to get shell!\n");
 
 
     while(1);
@@ -67,11 +71,14 @@ void init(void)
 {
     uint32_t ret_pid = fork();
     if (ret_pid) {
-        printf("[PID %d] I am parent, child's pid: %d\n", getpid(), ret_pid);
+        // printf("[PID %d] I am parent, child's pid: %d\n", getpid(), ret_pid);
+        while (1);
     } else {
-        printf("[PID %d] I am child, ret_pid: %d\n", getpid(), ret_pid);
+        // printf("[PID %d] I am child, ret_pid: %d\n", getpid(), ret_pid);
+        my_shell();
     }
-    while(1);
+    
+    panic("init: should not be here");
 }
 
 void k_thread_a(void* arg)

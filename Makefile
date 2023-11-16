@@ -4,7 +4,7 @@ AS = nasm
 CC = i386-elf-gcc
 #CC = gcc
 LD = i386-elf-ld
-LIB = -I lib/ -I kernel/ -I thread/ -I device/ -I userprog/ -I fs/
+LIB = -I lib/ -I kernel/ -I thread/ -I device/ -I userprog/ -I fs/ -I shell/
 ASFLAGS = -f elf -g 
 CFLAGS = -Wall $(LIB) -c -fno-builtin -w -Wstrict-prototypes \
 		 -Wmissing-prototypes -Werror -Wimplicit-function-declaration -fno-stack-protector \
@@ -32,7 +32,10 @@ OBJS = $(BUILD_DIR)/main.o $(BUILD_DIR)/init.o $(BUILD_DIR)/interrupt.o \
 	   $(BUILD_DIR)/file.o \
 	   $(BUILD_DIR)/dir.o \
 	   $(BUILD_DIR)/inode.o \
-	   $(BUILD_DIR)/fork.o
+	   $(BUILD_DIR)/fork.o \
+	   $(BUILD_DIR)/assert.o \
+	   $(BUILD_DIR)/shell.o \
+	   $(BUILD_DIR)/builtin_cmd.o
 	
 
 
@@ -67,6 +70,8 @@ $(BUILD_DIR)/%.o: userprog/%.c
 $(BUILD_DIR)/%.o: fs/%.c
 	$(CC) $(CFLAGS) $< -o $@
 
+$(BUILD_DIR)/%.o: shell/%.c
+	$(CC) $(CFLAGS) $< -o $@
 #################### compile Assembly #################### 
 $(BUILD_DIR)/%.o: kernel/%.S
 	$(AS) $(ASFLAGS) $< -o $@
