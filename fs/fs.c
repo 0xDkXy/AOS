@@ -192,10 +192,11 @@ void filesys_init()
      *
      * I will fix this bug later.
      */
-    struct super_block* _temp = (struct super_block*)sys_malloc(1024 * 4);
+    // struct super_block* _temp = (struct super_block*)sys_malloc(1024 * 4);
     struct super_block* sb_buf = (struct super_block*)sys_malloc(SECTOR_SIZE * 2);
-    sys_free(_temp);
+    // sys_free(_temp);
 
+    // asm volatile("xchgw %%bx, %%bx":::"memory");
     if (sb_buf == NULL) {
         PANIC("alloc memory failed!");
     }
@@ -220,6 +221,7 @@ void filesys_init()
                     // check_arena((void*)sb_buf);
                     // BUG
                     ide_read(hd, part->start_lba + 1, sb_buf, 1);
+                    // asm volatile("xchgw %%bx, %%bx":::"memory");
 
                     // check_arena((void*)sb_buf);
                     if (sb_buf->magic == 19260817) {
