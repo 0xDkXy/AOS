@@ -396,6 +396,7 @@ void* sys_malloc(uint32_t size)
         a->cnt--;
         lock_release(&mem_pool->lock);
         // printk("alloc: a->desc: 0x%x before return\n", (uint32_t)a->desc);
+        printk("%s %d arena: 0x%x\n", __FILE__, __LINE__, (uint32_t)a);
         return (void*)b;
     }
 }
@@ -426,6 +427,7 @@ void pfree(uint32_t pg_phy_addr)
         mem_pool = &kernel_pool;
         bit_idx = (pg_phy_addr - kernel_pool.phy_addr_start) / PG_SIZE;
     }
+    bitmap_set(&mem_pool->pool_bitmap, bit_idx, 0);
 }
 
 static void paget_table_pte_remove(uint32_t vaddr)
