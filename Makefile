@@ -100,7 +100,7 @@ mk_dir:
 hd: 
 	dd if=$(BUILD_DIR)/kernel.bin of=hd60M.img bs=512 count=200 seek=9 conv=notrunc ;\
 		dd if=$(BUILD_DIR)/mbr.bin of=hd60M.img bs=512 count=1 conv=notrunc ;\
-			dd if=build/loader.bin of=hd60M.img bs=512 count=4 seek=2 conv=notrunc
+			dd if=$(BUILD_DIR)/loader.bin of=hd60M.img bs=512 count=4 seek=2 conv=notrunc
 
 clean:
 	rm *.lock *temp* *.out *.sym;\

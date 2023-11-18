@@ -396,7 +396,9 @@ void* sys_malloc(uint32_t size)
         a->cnt--;
         lock_release(&mem_pool->lock);
         // printk("alloc: a->desc: 0x%x before return\n", (uint32_t)a->desc);
+#ifdef DEBUG
         printk("%s %d arena: 0x%x\n", __FILE__, __LINE__, (uint32_t)a);
+#endif
         return (void*)b;
     }
 }
