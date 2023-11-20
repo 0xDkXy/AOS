@@ -791,6 +791,7 @@ char* sys_getcwd(char* buf, uint32_t size)
     if (child_inode_num == 0) {
         buf[0] = '/';
         buf[1] = 0;
+        sys_free(io_buf);
         return buf;
     }
 
