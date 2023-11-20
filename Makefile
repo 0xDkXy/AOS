@@ -6,7 +6,7 @@ CC = i386-elf-gcc
 LD = i386-elf-ld
 LIB = -I lib/ -I kernel/ -I thread/ -I device/ -I userprog/ -I fs/ -I shell/
 ASFLAGS = -f elf -g 
-CFLAGS = -Wall $(LIB) -c -fno-builtin -w -Wstrict-prototypes \
+override CFLAGS += -Wall $(LIB) -c -fno-builtin -w -Wstrict-prototypes \
 		 -Wmissing-prototypes -Werror -Wimplicit-function-declaration -fno-stack-protector \
 		 -m32 -g
 LDFLAGS = -Ttext $(ENTRY_POINT) -e main -Map $(BUILD_DIR)/kernel.map -m elf_i386
@@ -35,7 +35,8 @@ OBJS = $(BUILD_DIR)/main.o $(BUILD_DIR)/init.o $(BUILD_DIR)/interrupt.o \
 	   $(BUILD_DIR)/fork.o \
 	   $(BUILD_DIR)/assert.o \
 	   $(BUILD_DIR)/shell.o \
-	   $(BUILD_DIR)/builtin_cmd.o
+	   $(BUILD_DIR)/builtin_cmd.o \
+	   $(BUILD_DIR)/exec.o
 	
 
 

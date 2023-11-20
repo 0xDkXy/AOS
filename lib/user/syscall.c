@@ -1,5 +1,6 @@
 #include "syscall.h"
 #include "fs.h"
+#include "exec.h"
 
 #define _syscall0(NUMBER) ({    \
     int retval;                 \
@@ -63,5 +64,4 @@ void rewinddir(struct dir* dir) { _syscall1(SYS_REWINDDIR, dir); }
 int32_t chdir(const char* path) { return _syscall1(SYS_CHDIR, path); }
 void ps(void) { _syscall0(SYS_PS); }
 int32_t stat(const char* path, struct stat* buf) { return _syscall2(SYS_STAT, path, buf); }
-
-
+int32_t execv(const char* path, const char* argv[]) { return _syscall2(SYS_EXECV, path, argv); }
