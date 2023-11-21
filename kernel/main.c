@@ -61,12 +61,12 @@ int main(void)
             obj_stat.st_filetype == 2 ? "directory" : "regular");
     */
 
-    uint32_t file_size = 14476;
+    uint32_t file_size = 15560;
     uint32_t sec_cnt = DIV_ROUND_UP(file_size, 512);
     struct disk* sda = &channels[0].devices[0];
     void* prog_buf = sys_malloc(file_size);
     ide_read(sda, 300, prog_buf, sec_cnt);
-    int32_t fd = sys_open("/prog_no_arg", O_CREAT|O_RDWR);
+    int32_t fd = sys_open("/prog_arg", O_CREAT|O_RDWR);
     if (fd != -1) {
         int _byte = sys_write(fd, prog_buf, file_size);
         if (_byte == -1) {
