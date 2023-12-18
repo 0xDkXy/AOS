@@ -16,7 +16,7 @@ Just for fun.
 - [x] fork
 - [x] shell
 - [x] basic built-in commands
-- [ ] load user programs
+- [x] load user programs
 - [ ] pipeline
 - [ ] copy-on-write
 - [ ] network driver
